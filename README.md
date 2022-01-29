@@ -12,6 +12,7 @@ For this gift exchange, each person draws another person **at random** and then 
 In this project, I make an assumption that ***each family member has a unique name***.
 Thus, use distinctive names for people who have the same name, e.g., "Paul Ryan" and "Paul Ryan 2" for two "Paul Ryan". 
 
+
 ## Part 1
 The first version of Secret Santa Draw will choose a Secret Santa for everyone given a list of all the members of the extended family.
 
@@ -26,13 +27,34 @@ Also, to avoid the mismatch of the family members and the Santa pairs, I decided
 In other words, each extended family needs to have their own Santa Draw instance.
 
 However, I believe the reusability of the feature is valuable. Thus, I recreated a pair assignment function in the same module,
-called ``santa_draw_fn``. This function does exactly the same thing as ``assign_santa_to_everyone`` in ``SantaDraw``.
+called ``santa_draw_fn()`` (renamed ``draw_secret_santa_pairs()`` in Part 2). This function does exactly the same thing as ``assign_santa_to_everyone`` in ``SantaDraw``.
 
 
 ![SantaDrawV1](resources/SantaDrawV1.svg)
 
 I created the ``Family`` class to stand for the family object. 
 It is the sequence protocol but not hashable since the object is not immutable.
+
+
+## Part 2
+The second version of Secret Santa Draw has a new requirement on top of the first version.
+This time, a family member can only have the same Secret Santa once every 3 years.
+
+### Requirements
+* A person cannot be their own Secret Santa.
+* A family member can only have the same Secret Santa once every 3 years.
+
+### Design choices
+By this time, I noticed that the requirements to choose an assignee can change over time. 
+Thus, I decided to create a validation function independently in ``is_valid_pairs()``, or a static method in this project, from the main method.
+Also, to keep track of the latest two people assigned to a person (Secret Santa), I created the ``Person`` class.
+So, ``Family`` objects now hold instances of ``Person``.
+
+
+![SantaDrawV2](resources/SantaDrawV2.svg)
+
+The ``Person`` class stands for an agent and holds relevant data for Santa Draw.
+The ``name`` is immutable in an instance of ``Person``. Also, it holds the last two assignees. 
 
 
 ## Unit Test

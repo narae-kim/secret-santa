@@ -1,18 +1,20 @@
 import reprlib
 
+from secretsanta.santadraw.person import Person
+
 
 class Family:
     """
     ``Family`` class is the sequence protocol.
     ``Family`` class is not hashable since the object is not immutable.
-    The members only have unique names.
+    The members are wrapped in ``Person`` objects with unique names.
     """
 
     def __init__(self, members=None):
         if members is None:
             self._members = []
         else:
-            self._members = list(set(members))
+            self._members = list({member if isinstance(member, Person) else Person(member) for member in members})
 
     def __len__(self):
         return len(self._members)
@@ -21,7 +23,10 @@ class Family:
         return self._members[position]
 
     def __setitem__(self, position, value):
-        self._members[position] = value
+        if isinstance(value, Person):
+            self._members[position] = value
+        else:
+            self._members[position] = Person(value)
 
     def __delitem__(self, position):
         del self._members[position]
