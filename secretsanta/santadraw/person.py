@@ -3,25 +3,56 @@ from collections import deque
 
 class Person:
     """
-    `Person` class is hashable based on the attribute ``name``. Thus, ``name`` must be immutable.
+    ``Person`` class is hashable based on the attribute ``name``. Thus, ``name`` must be immutable.
     In this project, I made an assumption that each Person will have a unique name.
+    Each person instance holds ``_immediate_family`` as a set type and it can be updated by
+    ``add_immediate_family_with()`` and ``remove_immediate_family_with()``.
 
     To allow the same name people, I could have introduced personal ID by a class attribute, e.g., ``count``.
     In that case, __hash__ and __eq__ methods need to be updated accordingly.
     """
 
-    # count = 1
-
-    def __init__(self, name):
+    def __init__(self, name, immediate_family=None):
         self.__name = name
         self._last_assignees = deque(maxlen=2)  # only holds last two assignees
-        # self.__id = Person.count
-        # Person.count += 1
+        if immediate_family is None:
+            self._immediate_family = set()
+        else:
+            self._immediate_family = {member if isinstance(member, Person) else Person(member) for member in
+                                      immediate_family}
+
+    def is_person_in_immediate_family(self, person) -> bool:
+        """
+        Return True if the person is in the immediate family, ``_immediate_family``, of this person.
+        Otherwise, return False.
+        """
+        return person in self._immediate_family
+
+    def add_immediate_family_with(self, person) -> None:
+        """Add the person in the immediate family, ``_immediate_family``, as an instance of ``Person``"""
+        if isinstance(person, Person):
+            self._immediate_family.add(person)
+        else:
+            self._immediate_family.add(Person(person))
+
+    def remove_immediate_family_with(self, person) -> None:
+        """
+        Remove the person from the immediate family, ``_immediate_family``.
+        If the person does not exist, nothing happens (no exception).
+        """
+        if isinstance(person, Person):
+            self._immediate_family.discard(person)
+        else:
+            self._immediate_family.discard(Person(person))
+
+    def get_immediate_family(self):
+        """Getter for the immediate family. Return a copy of ``self._immediate_family``"""
+        return set(self._immediate_family)
 
     def is_person_in_last_assignees(self, person) -> bool:
         """
         Return True if the person is in ``self._last_assignees``.
-        In other words, return True if the person was this person's assignee in the last two years.
+        In other words, return True if the person was this person's assignee in the last two times.
         Otherwise, return False.
         """
         return person in self._last_assignees
@@ -38,10 +69,6 @@ class Person:
         """The attribute ``name`` is read-only"""
         return self.__name
 
-    # @property
-    # def id(self):
-    #     return self.__id
-
     def __repr__(self):
         return "{}({})".format(type(self).__name__, repr(self.name))
 
@@ -49,9 +76,8 @@ class Person:
         return str(self.name)
 
     def __hash__(self):
-        # return hash(self.name) ^ hash(self.id)
         return hash(self.name)
 
     def __eq__(self, other):
-        """``Person`` compares the name of self and other only"""
+        """``Person`` compares the name of self and str(other) only"""
         return str(self) == str(other)

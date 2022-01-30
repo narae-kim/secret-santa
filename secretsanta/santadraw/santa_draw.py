@@ -19,8 +19,12 @@ class SantaDraw:
         ``is_valid_pairs`` returns True if the candidate is valid for the santa. Otherwise, False.
         This method can be overridden when a new requirement or additional constraint comes to Santa Draw.
         This static method also can be a function instead.
+
+        :param santa: This must be an instance of Person
+        :param candidate: This can be a name of the person or an instance of Person
         """
-        return santa != candidate and not santa.is_person_in_last_assignees(candidate)
+        return santa != candidate and not santa.is_person_in_last_assignees(
+            candidate) and not santa.is_person_in_immediate_family(candidate)
 
     def __update_last_assignees(self) -> None:
         """Update the members' last assignees according to the new pairs"""
@@ -40,7 +44,7 @@ class SantaDraw:
         until it finds validate pairs.
 
         :param random_seed: Optional argument to set the random seed for debugging purpose
-        :raises ValueError: If the number of family members is less than 2
+        :raises ValueError: If the number of family members is less than 2 or there is no possible pairs
         """
         if len(self._family_members) < 2:
             # depending on requirements it can raise a customised exception
@@ -74,8 +78,8 @@ class SantaDraw:
         return self._family_members
 
     def get_santa_pairs(self):
-        """Getter for the latest { Secret Santa : Assignee } pairs"""
-        return self._santa_pairs
+        """Getter for the latest { Secret Santa : Assignee } pairs with a copy of ``_santa_pairs``"""
+        return dict(self._santa_pairs)
 
 
 @synchronized
@@ -94,9 +98,9 @@ def draw_secret_santa_pairs(family_members: Family, random_seed=datetime.now()):
     until it finds validate pairs.
         Note: ``SantaDraw.is_valid_pairs()`` can be a function itself instead of the static method.
 
-    :param family_members: It should be the sequence protocol, e.g., ``Family`` or list.
+    :param family_members: This argument has to be an iterable of Person type, e.g., Family
     :param random_seed: Optional argument to set the random seed for debugging purpose
-    :raises ValueError: If the number of family members is less than 2
+    :raises ValueError: If the number of family members is less than 2 or there is no possible pairs
     """
     if len(family_members) < 2:
         # depending on requirements it can raise a customised exception
@@ -106,6 +110,7 @@ def draw_secret_santa_pairs(family_members: Family, random_seed=datetime.now()):
         """Update the members' last assignees according to the new pairs"""
         for santa, assignee in santa_pairs.items():
             santa.update_last_assignees_with(assignee)
+
     if not isinstance(family_members, Family):
         family_members = Family(family_members)
     santa_pairs = {}
@@ -131,4 +136,3 @@ def draw_secret_santa_pairs(family_members: Family, random_seed=datetime.now()):
             __update_last_assignees()
             return santa_pairs
     raise ValueError("This family is invalid to generate secret santa pairs according to the rules.")
-

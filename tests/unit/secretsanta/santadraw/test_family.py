@@ -152,5 +152,152 @@ class TestDuplicatedFamilyMembers(TestCase):
         self.assertNotEqual(self.family, different_family)
 
 
+class TestFlexibleFamily(TestCase):
+    """
+    Test ``add_immediate_family_of_person_with_new_member()`` and ``remove_immediate_family_of_person_with_member()``
+    of ``Family``
+    """
+
+    def test_add_immediate_family_of_person_with_new_member_in_str_str(self):
+        """Test ``add_immediate_family_of_person_with_new_member()`` in str type and str type"""
+        orig1 = "orig1"
+        orig2 = "orig2"
+        family = Family([orig1, orig2])
+        new11 = "new11"
+        new12 = "new12"
+        new21 = "new21"
+        family.add_immediate_family_of_person_with_new_member(orig1, new11)
+        family.add_immediate_family_of_person_with_new_member(orig1, new12)
+        family.add_immediate_family_of_person_with_new_member(orig2, new21)
+        self.assertTrue(Person("new11") in family)
+        self.assertTrue("new11" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new21") in family)
+        self.assertTrue("new21" in family)
+
+    def test_add_immediate_family_of_person_with_new_member_in_str_person(self):
+        """Test ``add_immediate_family_of_person_with_new_member()`` in str type and Person type"""
+        orig1 = "orig1"
+        orig2 = "orig2"
+        family = Family([orig1, orig2])
+        new11 = Person("new11")
+        new12 = Person("new12")
+        new21 = Person("new21")
+        family.add_immediate_family_of_person_with_new_member(orig1, new11)
+        family.add_immediate_family_of_person_with_new_member(orig1, new12)
+        family.add_immediate_family_of_person_with_new_member(orig2, new21)
+        self.assertTrue(Person("new11") in family)
+        self.assertTrue("new11" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new21") in family)
+        self.assertTrue("new21" in family)
+
+    def test_add_immediate_family_of_person_with_new_member_in_person_str(self):
+        """Test ``add_immediate_family_of_person_with_new_member()`` in Person type and str type"""
+        orig1 = Person("orig1")
+        orig2 = Person("orig2")
+        family = Family([orig1, orig2])
+        new11 = "new11"
+        new12 = "new12"
+        new21 = "new21"
+        family.add_immediate_family_of_person_with_new_member(orig1, new11)
+        family.add_immediate_family_of_person_with_new_member(orig1, new12)
+        family.add_immediate_family_of_person_with_new_member(orig2, new21)
+        self.assertTrue(Person("new11") in family)
+        self.assertTrue("new11" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new21") in family)
+        self.assertTrue("new21" in family)
+
+    def test_add_immediate_family_of_person_with_new_member_in_person_person(self):
+        """Test ``add_immediate_family_of_person_with_new_member()`` in str type and Person type"""
+        orig1 = Person("orig1")
+        orig2 = Person("orig2")
+        family = Family([orig1, orig2])
+        new11 = Person("new11")
+        new12 = Person("new12")
+        new21 = Person("new21")
+        family.add_immediate_family_of_person_with_new_member(orig1, new11)
+        family.add_immediate_family_of_person_with_new_member(orig1, new12)
+        family.add_immediate_family_of_person_with_new_member(orig2, new21)
+        self.assertTrue(Person("new11") in family)
+        self.assertTrue("new11" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new21") in family)
+        self.assertTrue("new21" in family)
+
+    def test_remove_immediate_family_of_person_with_member_in_str_str(self):
+        """Test ``remove_immediate_family_of_person_with_member()`` in str type and str type"""
+        family = Family([Person("orig1", ["new11", "new12"]), Person("orig2", ["new21"])])
+        orig1 = "orig1"
+        orig2 = "orig2"
+        new11 = "new11"
+        new21 = "new21"
+        family.remove_immediate_family_of_person_with_member(orig1, new11)
+        family.remove_immediate_family_of_person_with_member(orig2, new21)
+        family.remove_immediate_family_of_person_with_member(orig1, new11)  # no error
+        self.assertFalse("new11" in family)
+        self.assertFalse(Person("new11") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertFalse("new21" in family)
+        self.assertFalse(Person("new21") in family)
+
+    def test_remove_immediate_family_of_person_with_member_in_str_person(self):
+        """Test ``remove_immediate_family_of_person_with_member()`` in str type and Person type"""
+        family = Family([Person("orig1", ["new11", "new12"]), Person("orig2", ["new21"])])
+        orig1 = "orig1"
+        orig2 = "orig2"
+        new11 = Person("new11")
+        new21 = Person("new21")
+        family.remove_immediate_family_of_person_with_member(orig1, new11)
+        family.remove_immediate_family_of_person_with_member(orig2, new21)
+        family.remove_immediate_family_of_person_with_member(orig1, new11)  # no error
+        self.assertFalse("new11" in family)
+        self.assertFalse(Person("new11") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertFalse("new21" in family)
+        self.assertFalse(Person("new21") in family)
+
+    def test_remove_immediate_family_of_person_with_member_in_person_str(self):
+        """Test ``remove_immediate_family_of_person_with_member()`` in Person type and str type"""
+        family = Family([Person("orig1", ["new11", "new12"]), Person("orig2", ["new21"])])
+        orig1 = Person("orig1")
+        orig2 = Person("orig2")
+        new11 = "new11"
+        new21 = "new21"
+        family.remove_immediate_family_of_person_with_member(orig1, new11)
+        family.remove_immediate_family_of_person_with_member(orig2, new21)
+        family.remove_immediate_family_of_person_with_member(orig1, new11)  # no error
+        self.assertFalse("new11" in family)
+        self.assertFalse(Person("new11") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertFalse("new21" in family)
+        self.assertFalse(Person("new21") in family)
+
+    def test_remove_immediate_family_of_person_with_member_in_person_person(self):
+        """Test ``remove_immediate_family_of_person_with_member()`` in Person type and Person type"""
+        family = Family([Person("orig1", ["new11", "new12"]), Person("orig2", ["new21"])])
+        orig1 = Person("orig1")
+        orig2 = Person("orig2")
+        new11 = Person("new11")
+        new21 = Person("new21")
+        family.remove_immediate_family_of_person_with_member(orig1, new11)
+        family.remove_immediate_family_of_person_with_member(orig2, new21)
+        family.remove_immediate_family_of_person_with_member(orig1, new11)  # no error
+        self.assertFalse("new11" in family)
+        self.assertFalse(Person("new11") in family)
+        self.assertTrue("new12" in family)
+        self.assertTrue(Person("new12") in family)
+        self.assertFalse("new21" in family)
+        self.assertFalse(Person("new21") in family)
+
+
 if __name__ == '__main__':
     main()
